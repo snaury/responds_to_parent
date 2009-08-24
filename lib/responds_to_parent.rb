@@ -32,10 +32,16 @@ module RespondsToParent
       # with(window.parent) - pull in variables from parent window
       # setTimeout - scope the execution in the windows parent for safari
       # window.eval - legal eval for Opera
-      render :text => "<html><body><script type='text/javascript' charset='utf-8'>
-        var loc = document.location;
-        with(window.parent) { setTimeout(function() { window.eval('#{escape_javascript script}'); window.loc && loc.replace('about:blank'); }, 1) }
-      </script></body></html>"
+      render :text => <<END
+<html>
+<body>
+<script type='text/javascript' charset='utf-8'>
+  window.parent.eval('#{escape_javascript script}');
+  document.location.replace('about:blank');
+</script>
+</body>
+</html>
+END
     end
   end
   alias respond_to_parent responds_to_parent
