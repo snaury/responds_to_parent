@@ -1,10 +1,5 @@
 # Module containing the methods useful for child IFRAME to parent window communication
 module RespondsToParent
-  def escape_javascript(javascript)
-    self.class.helpers.escape_javascript(javascript)
-  end
-  private :escape_javascript
-
   # Executes the response body as JavaScript in the context of the parent window.
   # Use this method of you are posting a form to a hidden IFRAME or if you would like
   # to use IFRAME base RPC.
@@ -15,7 +10,7 @@ module RespondsToParent
     if performed?
       # Either pull out a redirect or the request body
       script =  if location = erase_redirect_results
-                  "document.location.href = '#{escape_javascript location.to_s}'"
+                  "document.location.href = '#{self.class.helpers.escape_javascript location.to_s}'"
                 else
                   response.body || ''
                 end
@@ -36,7 +31,7 @@ module RespondsToParent
 <html>
 <body>
 <script type='text/javascript' charset='utf-8'>
-  window.parent.eval('#{escape_javascript script}');
+  window.parent.eval('#{self.class.helpers.escape_javascript script}');
   document.location.replace('about:blank');
 </script>
 </body>
