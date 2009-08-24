@@ -7,7 +7,7 @@ spec = Gem::Specification.new do |s|
                   'Make Ajaxy file uploads by posting the form to a hidden' +
                   'iframe, and respond with RJS to the parent window.'
   
-  s.files = %w( README Rakefile MIT-LICENSE rails/init.rb
+  s.files = %w( README Rakefile MIT-LICENSE init.rb
                 lib/responds_to_parent.rb
                 lib/parent_selector_assertion.rb
                 test/responds_to_parent_test.rb
