@@ -6,6 +6,7 @@ module RespondsToParent
   # to use IFRAME base RPC.
   def responds_to_parent
     yield if block_given?
+    default_render unless performed?
     
     if performed?
       # Either pull out a redirect or the request body
