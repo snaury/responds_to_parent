@@ -41,4 +41,3 @@ END
   end
   alias respond_to_parent responds_to_parent
 end
-

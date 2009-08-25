@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/../../../../config/environment'
-require 'test/unit'
 require 'test_help'
 
 class IFrameController < ActionController::Base
@@ -19,17 +18,6 @@ class IFrameController < ActionController::Base
     responds_to_parent do
       redirect_to '/another/place'
     end
-  end
-  
-  def no_block
-    responds_to_parent
-  end
-  
-  def empty_render
-    responds_to_parent do
-    end
-    
-    render :text => ''
   end
   
   def quotes
@@ -58,7 +46,7 @@ class IFrameController < ActionController::Base
   end
 end
 
-class RespondsToParentTest < Test::Unit::TestCase
+class RespondsToParentTest < ActionController::TestCase
   def setup
     @controller = IFrameController.new
     @request    = ActionController::TestRequest.new
@@ -81,17 +69,6 @@ class RespondsToParentTest < Test::Unit::TestCase
     assert_match %r{eval\('line1\\nline2\\\\nline2'\)}, @response.body
   end
   
-  def test_no_block_should_raise
-    assert_raises LocalJumpError do
-      get :no_block
-    end
-  end
-  
-  def test_empty_render_should_not_expand_javascript
-    get :empty_render
-    assert_equal '', @response.body
-  end
-  
   def test_update_should_perform_combined_rjs
     render :update
     assert_match /alert\(\\"foo\\"\);\\nalert\(\\"bar\\"\)/, @response.body
@@ -109,7 +86,7 @@ protected
   def render(action)
     get action
     assert_match /<script type='text\/javascript'/, @response.body
-    assert_match /with\(window\.parent\)/, @response.body
-    assert_match /loc\.replace\('about:blank'\)/, @response.body
+    assert_match /window\.parent\.eval/, @response.body
+    assert_match /document\.location\.replace\('about:blank'\)/, @response.body
   end
 end
