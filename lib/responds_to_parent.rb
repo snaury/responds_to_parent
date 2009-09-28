@@ -31,7 +31,26 @@ module RespondsToParent
 <html>
 <body>
 <script type='text/javascript' charset='utf-8'>
-  window.parent.eval('#{self.class.helpers.escape_javascript script}');
+  function parent_eval(script_text) {
+    var is_webkit = navigator.userAgent.indexOf(' AppleWebKit/') >= 0;
+    var window_parent = window.parent;
+    if(is_webkit) {
+      var parent_document = window_parent.document;
+      var target = parent_document.documentElement;
+      var script = parent_document.createElement('script');
+      script.type = 'text/javascript';
+      script.appendChild(parent_document.createTextNode(script_text));
+      target.insertBefore(script, target.firstChild);
+      target.removeChild(script);
+    } else if(window_parent.execScript) {
+      window_parent.execScript(script_text, 'JavaScript');
+    } else if(window_parent.eval) {
+      window_parent.eval(script_text);
+    } else {
+      eval.call(window_parent, script_text);
+    }
+  }
+  parent_eval('#{self.class.helpers.escape_javascript script}');
   document.location.replace('about:blank');
 </script>
 </body>

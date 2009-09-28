@@ -57,17 +57,17 @@ class RespondsToParentTest < ActionController::TestCase
   def test_normal
     get :normal
     assert_match /alert\("foo"\)/, @response.body
-    assert_no_match /window\.parent/, @response.body
+    assert_no_match /parent_eval/, @response.body
   end
   
   def test_quotes_should_be_escaped
     render :quotes
-    assert_match %r{eval\('single\\' double\\" qs\\\\\\' qd\\\\\\" escaped\\\\\\' doubleescaped\\\\\\\\\\'}, @response.body
+    assert_match %r{parent_eval\('single\\' double\\" qs\\\\\\' qd\\\\\\" escaped\\\\\\' doubleescaped\\\\\\\\\\'}, @response.body
   end
   
   def test_newlines_should_be_escaped
     render :newlines
-    assert_match %r{eval\('line1\\nline2\\\\nline2'\)}, @response.body
+    assert_match %r{parent_eval\('line1\\nline2\\\\nline2'\)}, @response.body
   end
   
   def test_update_should_perform_combined_rjs
@@ -78,7 +78,7 @@ class RespondsToParentTest < ActionController::TestCase
   def test_aliased_method_should_not_raise
     assert_nothing_raised do
       render :aliased
-      assert_match /eval\('woot'\)/, @response.body
+      assert_match /parent_eval\('woot'\)/, @response.body
     end
   end
   
@@ -87,7 +87,7 @@ protected
   def render(action)
     get action
     assert_match /<script type='text\/javascript'/, @response.body
-    assert_match /window\.parent\.eval/, @response.body
+    assert_match /parent_eval/, @response.body
     assert_match /document\.location\.replace\('about:blank'\)/, @response.body
   end
 end

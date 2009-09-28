@@ -18,7 +18,7 @@ module ActionController
       # to be evaluated in the parent window and passes it to the block.
       # Typically #assert_select_rjs is used in the block.
       def assert_select_parent(*args, &block)
-        if @response.body =~ /window\.parent\.eval\('(.*)'\);\s*document\.location\.replace\('about\:blank'\);/
+        if @response.body =~ /parent_eval\('(.*)'\);\s*document\.location\.replace\('about\:blank'\);/
           escaped_js = $1
           unescaped_js = escaped_js.gsub(/\\(.)/) { JS_UNESCAPES[$1] || $1 }
           @response.body = unescaped_js # assert_select_rjs refers @response.body.
